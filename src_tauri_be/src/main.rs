@@ -1,6 +1,9 @@
 // Prevents additional console window on Windows in release
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+// 모듈 선언
+mod book_mappings;
+
 // TODO: 여기에 성경 구절 자동완성 기능을 구현할 예정
 // - 키보드 후킹
 // - 패턴 분석 (#창 1:1)
