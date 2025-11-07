@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "identifier": "com.bible.easy",
   "build": {
-    "beforeDevCommand": "npx serve src -l 1420",
+    "beforeDevCommand": "npx serve src_fe -l 1420",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "",
-    "frontendDist": "../src"
+    "frontendDist": "../src_fe"
   },
   "bundle": {
     "active": true,
     "targets": "all"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "Bible Easy",

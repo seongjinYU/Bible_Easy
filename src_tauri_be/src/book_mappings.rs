@@ -297,6 +297,83 @@ pub fn create_korean_to_english_mapping() -> HashMap<String, String> {
     map
 }
 
+/// 영어 약어 → 한글 풀네임 매핑을 생성합니다.
+pub fn create_english_to_korean_mapping() -> std::collections::HashMap<String, String> {
+    let mut map = std::collections::HashMap::new();
+
+    // 구약
+    map.insert("gn".to_string(), "창세기".to_string());
+    map.insert("ex".to_string(), "출애굽기".to_string());
+    map.insert("lv".to_string(), "레위기".to_string());
+    map.insert("nm".to_string(), "민수기".to_string());
+    map.insert("dt".to_string(), "신명기".to_string());
+    map.insert("js".to_string(), "여호수아".to_string());
+    map.insert("jud".to_string(), "사사기".to_string());
+    map.insert("rt".to_string(), "룻기".to_string());
+    map.insert("1sm".to_string(), "사무엘상".to_string());
+    map.insert("2sm".to_string(), "사무엘하".to_string());
+    map.insert("1kgs".to_string(), "열왕기상".to_string());
+    map.insert("2kgs".to_string(), "열왕기하".to_string());
+    map.insert("1ch".to_string(), "역대상".to_string());
+    map.insert("2ch".to_string(), "역대하".to_string());
+    map.insert("ezr".to_string(), "에스라".to_string());
+    map.insert("ne".to_string(), "느헤미야".to_string());
+    map.insert("et".to_string(), "에스더".to_string());
+    map.insert("job".to_string(), "욥기".to_string());
+    map.insert("ps".to_string(), "시편".to_string());
+    map.insert("prv".to_string(), "잠언".to_string());
+    map.insert("ec".to_string(), "전도서".to_string());
+    map.insert("so".to_string(), "아가".to_string());
+    map.insert("is".to_string(), "이사야".to_string());
+    map.insert("jr".to_string(), "예레미야".to_string());
+    map.insert("lm".to_string(), "예레미야애가".to_string());
+    map.insert("ez".to_string(), "에스겔".to_string());
+    map.insert("dn".to_string(), "다니엘".to_string());
+    map.insert("ho".to_string(), "호세아".to_string());
+    map.insert("jl".to_string(), "요엘".to_string());
+    map.insert("am".to_string(), "아모스".to_string());
+    map.insert("ob".to_string(), "오바댜".to_string());
+    map.insert("jn".to_string(), "요나".to_string());
+    map.insert("mi".to_string(), "미가".to_string());
+    map.insert("na".to_string(), "나훔".to_string());
+    map.insert("hk".to_string(), "하박국".to_string());
+    map.insert("zp".to_string(), "스바냐".to_string());
+    map.insert("hg".to_string(), "학개".to_string());
+    map.insert("zc".to_string(), "스가랴".to_string());
+    map.insert("ml".to_string(), "말라기".to_string());
+
+    // 신약
+    map.insert("mt".to_string(), "마태복음".to_string());
+    map.insert("mk".to_string(), "마가복음".to_string());
+    map.insert("lk".to_string(), "누가복음".to_string());
+    map.insert("jo".to_string(), "요한복음".to_string());
+    map.insert("act".to_string(), "사도행전".to_string());
+    map.insert("rm".to_string(), "로마서".to_string());
+    map.insert("1co".to_string(), "고린도전서".to_string());
+    map.insert("2co".to_string(), "고린도후서".to_string());
+    map.insert("gl".to_string(), "갈라디아서".to_string());
+    map.insert("eph".to_string(), "에베소서".to_string());
+    map.insert("ph".to_string(), "빌립보서".to_string());
+    map.insert("cl".to_string(), "골로새서".to_string());
+    map.insert("1ts".to_string(), "데살로니가전서".to_string());
+    map.insert("2ts".to_string(), "데살로니가후서".to_string());
+    map.insert("1tm".to_string(), "디모데전서".to_string());
+    map.insert("2tm".to_string(), "디모데후서".to_string());
+    map.insert("tt".to_string(), "디도서".to_string());
+    map.insert("phm".to_string(), "빌레몬서".to_string());
+    map.insert("hb".to_string(), "히브리서".to_string());
+    map.insert("jm".to_string(), "야고보서".to_string());
+    map.insert("1pe".to_string(), "베드로전서".to_string());
+    map.insert("2pe".to_string(), "베드로후서".to_string());
+    map.insert("1jo".to_string(), "요한일서".to_string());
+    map.insert("2jo".to_string(), "요한이서".to_string());
+    map.insert("3jo".to_string(), "요한삼서".to_string());
+    map.insert("jd".to_string(), "유다서".to_string());
+    map.insert("re".to_string(), "요한계시록".to_string());
+
+    map
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
