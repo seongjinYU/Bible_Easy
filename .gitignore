@@ -1,0 +1,21 @@
+# Node
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Tauri
+src_tauri_be/target/
+src_tauri_be/Cargo.lock
+
+# Build output
+dist/
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+bible.json

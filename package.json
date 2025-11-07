@@ -1,0 +1,21 @@
+{
+  "name": "bible-easy",
+  "version": "0.1.0",
+  "description": "성경 구절 자동완성 유틸리티",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "keywords": [
+    "bible",
+    "autocomplete",
+    "tauri"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.3",
+    "serve": "^14.2.5"
+  }
+}
