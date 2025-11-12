@@ -7,6 +7,9 @@ mod book_mappings;
 mod db_query;
 mod pattern_parser;
 mod settings;
+mod accessibility;
+mod keyboard_listener;
+mod hangul;
 
 use std::path::PathBuf;
 
@@ -56,12 +59,35 @@ fn update_settings(settings: settings::AppSettings) -> Result<(), String> {
     settings::save_settings(&settings)
 }
 
+/// 접근성 권한 확인 Tauri Command
+///
+/// # Returns
+/// * `true` - 권한 있음
+/// * `false` - 권한 없음
+#[tauri::command]
+fn check_accessibility() -> bool {
+    accessibility::check_accessibility_permission()
+}
+
+/// 접근성 권한 요청 Tauri Command
+///
+/// 시스템 설정 창을 엽니다.
+#[tauri::command]
+fn request_accessibility() {
+    accessibility::request_accessibility_permission();
+}
+
 fn main() {
+    // 키보드 리스너 시작
+    keyboard_listener::start_listener();
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_bible_verse,
             get_settings,
-            update_settings
+            update_settings,
+            check_accessibility,
+            request_accessibility
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
