@@ -55,10 +55,10 @@ impl BufferState {
             return;
         }
 
-        // 조합 중인 글자가 있으면 조합만 지우고, 없으면 버퍼의 마지막 글자 제거
+        // 조합 중인 글자가 있으면 자모 하나씩 지우고, 없으면 버퍼의 마지막 글자 제거
         if !self.hangul.is_empty() {
-            // 조합 중인 글자 전체 지우기 (글자 단위)
-            self.hangul.clear();
+            // 조합 중인 글자 한 단계씩 분해 (종성 → 중성 → 초성)
+            self.hangul.backspace();
         } else if self.buffer.len() > 1 {
             // # 까지는 제거하지 않음
             self.buffer.pop();
@@ -336,6 +336,10 @@ fn handle_key_event(
                     Ok(verse_text) => {
                         println!("✅ 구절 찾음: {}", verse_text);
 
+                        // 텍스트 교체 시작 - 플래그를 먼저 설정 (리스너가 자신의 이벤트를 무시하도록)
+                        REPLACING.store(true, Ordering::SeqCst);
+                        println!("🔒 텍스트 교체 시작, 리스너 비활성화");
+
                         // enigo로 텍스트 교체 (패턴 삭제 + 구절 삽입)
                         let pattern_len = pattern.chars().count();
                         println!("🔢 패턴: '{}' (길이: {} 글자)", pattern, pattern_len);
@@ -356,14 +360,14 @@ fn handle_key_event(
                                 key_down.post(CGEventTapLocation::HID);
                             }
 
-                            std::thread::sleep(std::time::Duration::from_millis(20));
+                            std::thread::sleep(std::time::Duration::from_millis(5));
 
                             // KeyUp 이벤트
                             if let Ok(key_up) = CGEvent::new_keyboard_event(source.clone(), BACKSPACE_KEYCODE, false) {
                                 key_up.post(CGEventTapLocation::HID);
                             }
 
-                            std::thread::sleep(std::time::Duration::from_millis(80));
+                            std::thread::sleep(std::time::Duration::from_millis(10));
 
                             if (i + 1) % 2 == 0 || i == pattern_len - 1 {
                                 println!("  ⌫ {} / {} 완료", i + 1, pattern_len);
@@ -371,17 +375,21 @@ fn handle_key_event(
                         }
                         println!("  ✅ 삭제 완료");
 
-                        // 백스페이스 완료 후 텍스트 삽입 시작 - 이제 플래그 설정
-                        REPLACING.store(true, Ordering::SeqCst);
+                        // 백스페이스 후 충분히 대기 (시스템이 처리할 시간 확보)
+                        std::thread::sleep(std::time::Duration::from_millis(200));
 
                         // 구절 삽입
-                        let _ = enigo.text(&verse_text);
+                        println!("📝 텍스트 삽입 시작: {}", verse_text);
+                        match enigo.text(&verse_text) {
+                            Ok(_) => println!("✅ 텍스트 삽입 성공"),
+                            Err(e) => println!("❌ 텍스트 삽입 실패: {:?}", e),
+                        }
 
                         println!("🎉 텍스트 교체 완료!");
 
-                        // 200ms 후 플래그 해제 (별도 스레드)
+                        // 500ms 후 플래그 해제 (별도 스레드)
                         std::thread::spawn(|| {
-                            std::thread::sleep(std::time::Duration::from_millis(200));
+                            std::thread::sleep(std::time::Duration::from_millis(500));
                             REPLACING.store(false, Ordering::SeqCst);
                             println!("🔓 텍스트 교체 종료, 리스너 재활성화");
                         });

@@ -71,12 +71,12 @@ pub fn get_verse(db_path: &str, pattern: &str) -> Result<String, VerseError> {
         .clone();
 
     let reference = match actual_verse_end {
-        Some(end) => format!("[{} {}:{}-{}]", korean_name, chapter, actual_verse_start, end),
-        None => format!("[{} {}:{}]", korean_name, chapter, actual_verse_start),
+        Some(end) => format!("[{}{}:{}~{}]", korean_name, chapter, actual_verse_start, end),
+        None => format!("[{}{}:{}]", korean_name, chapter, actual_verse_start),
     };
 
     // 4. 구절 + 참조 반환
-    Ok(format!("{} {}", text, reference))
+    Ok(format!("\"{}\" {}", text, reference))
 }
 
 #[cfg(test)]
@@ -101,7 +101,7 @@ mod tests {
         assert!(result.is_ok(), "전체 플로우 실패: {:?}", result.err());
         let text = result.unwrap();
         assert!(text.contains("태초에 하나님이 천지를 창조하시니라"));
-        assert!(text.contains("[창세기 1:1]"));
+        assert!(text.contains("[창세기1:1]"));
     }
 
     #[test]
@@ -113,7 +113,7 @@ mod tests {
         assert!(result.is_ok());
         let text = result.unwrap();
         assert!(text.contains("태초에 하나님이 천지를 창조하시니라"));
-        assert!(text.contains("[창세기 1:1]"));
+        assert!(text.contains("[창세기1:1]"));
     }
 
     #[test]
@@ -127,7 +127,7 @@ mod tests {
         assert!(verse.contains("하나님이"));
         assert!(verse.contains("세상을"));
         assert!(verse.contains("독생자"));
-        assert!(verse.contains("[요한복음 3:16]"));
+        assert!(verse.contains("[요한복음3:16]"));
     }
 
     #[test]
@@ -139,7 +139,7 @@ mod tests {
         assert!(result.is_ok());
         let verse = result.unwrap();
         assert!(verse.contains("나 외에는"));
-        assert!(verse.contains("[출애굽기 20:3]"));
+        assert!(verse.contains("[출애굽기20:3]"));
 
         // 시편 23:1
         let result = get_verse(&db_path, "#시 23:1");
@@ -147,7 +147,7 @@ mod tests {
         let verse = result.unwrap();
         assert!(verse.contains("여호와"));
         assert!(verse.contains("목자"));
-        assert!(verse.contains("[시편 23:1]"));
+        assert!(verse.contains("[시편23:1]"));
 
         // 로마서 8:28
         let result = get_verse(&db_path, "#롬 8:28");
@@ -155,7 +155,7 @@ mod tests {
         let verse = result.unwrap();
         assert!(verse.contains("하나님"));
         assert!(verse.contains("선"));
-        assert!(verse.contains("[로마서 8:28]"));
+        assert!(verse.contains("[로마서8:28]"));
 
         // 계시록 21:1
         let result = get_verse(&db_path, "#계 21:1");
@@ -163,7 +163,7 @@ mod tests {
         let verse = result.unwrap();
         assert!(verse.contains("새 하늘"));
         assert!(verse.contains("새 땅"));
-        assert!(verse.contains("[요한계시록 21:1]"));
+        assert!(verse.contains("[요한계시록21:1]"));
     }
 
     #[test]
@@ -174,7 +174,7 @@ mod tests {
         let result = get_verse(&db_path, "#삼상 17:47");
         assert!(result.is_ok());
         let verse = result.unwrap();
-        assert!(verse.contains("[사무엘상 17:47]"));
+        assert!(verse.contains("[사무엘상17:47]"));
 
         // 고린도전서 13:13
         let result = get_verse(&db_path, "#고전 13:13");
@@ -183,7 +183,7 @@ mod tests {
         assert!(verse.contains("믿음"));
         assert!(verse.contains("소망"));
         assert!(verse.contains("사랑"));
-        assert!(verse.contains("[고린도전서 13:13]"));
+        assert!(verse.contains("[고린도전서13:13]"));
     }
 
     #[test]
@@ -195,7 +195,7 @@ mod tests {
         assert!(result.is_ok());
         let verse = result.unwrap();
         assert!(verse.contains("태초에 하나님이 천지를 창조하시니라"));
-        assert!(verse.contains("[창세기 1:1]"));
+        assert!(verse.contains("[창세기1:1]"));
     }
 
     #[test]
@@ -241,7 +241,7 @@ mod tests {
         assert!(text.contains("1 태초에"));
         assert!(text.contains("2 땅이"));
         assert!(text.contains("3 하나님이"));
-        assert!(text.contains("[창세기 1:1-3]"));
+        assert!(text.contains("[창세기1:1~3]"));
     }
 
     #[test]
@@ -255,7 +255,7 @@ mod tests {
         let text = result.unwrap();
         assert!(text.contains("1 태초에"));
         assert!(text.contains("5 빛을 낮이라"));
-        assert!(text.contains("[창세기 1:1-5]"));
+        assert!(text.contains("[창세기1:1~5]"));
     }
 
     #[test]
@@ -267,9 +267,9 @@ mod tests {
 
         assert!(result.is_ok());
         let text = result.unwrap();
-        assert!(text.contains("16"));
-        assert!(text.contains("17"));
-        assert!(text.contains("[요한복음 3:16-17]"));
+        assert!(text.contains("16 "));
+        assert!(text.contains("17 "));
+        assert!(text.contains("[요한복음3:16~17]"));
     }
 
     #[test]
@@ -281,10 +281,10 @@ mod tests {
 
         assert!(result.is_ok());
         let text = result.unwrap();
-        assert!(text.contains("1"));
+        assert!(text.contains("1 "));
         assert!(text.contains("목자"));
-        assert!(text.contains("6"));
-        assert!(text.contains("[시편 23:1-6]"));
+        assert!(text.contains("6 "));
+        assert!(text.contains("[시편23:1~6]"));
     }
 
     #[test]
@@ -297,9 +297,9 @@ mod tests {
         assert!(result.is_ok());
         let text = result.unwrap();
         assert!(text.contains("하나님이"));
-        // [창세기 1:31-31]이 아닌 [창세기 1:31]로 표시되어야 함
-        assert!(text.contains("[창세기 1:31]"));
-        assert!(!text.contains("[창세기 1:31-31]"));
+        // [창세기1:31~31]이 아닌 [창세기1:31]로 표시되어야 함
+        assert!(text.contains("[창세기1:31]"));
+        assert!(!text.contains("[창세기1:31~31]"));
     }
 
     #[test]
@@ -312,11 +312,11 @@ mod tests {
         assert!(result.is_ok());
         let text = result.unwrap();
         // 30절과 31절만 조회되어야 함
-        assert!(text.contains("30"));
-        assert!(text.contains("31"));
-        // [창세기 1:30-32]가 아닌 [창세기 1:30-31]로 표시되어야 함
-        assert!(text.contains("[창세기 1:30-31]"));
-        assert!(!text.contains("[창세기 1:30-32]"));
+        assert!(text.contains("30 "));
+        assert!(text.contains("31 "));
+        // [창세기1:30~32]가 아닌 [창세기1:30~31]로 표시되어야 함
+        assert!(text.contains("[창세기1:30~31]"));
+        assert!(!text.contains("[창세기1:30~32]"));
     }
 
     #[test]
