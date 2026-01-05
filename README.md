@@ -155,7 +155,6 @@ bible_easy/
 - Red-Green-Refactor 사이클 준수
 - 코드 품질: `rustfmt`, `clippy` 사용
 
-자세한 코딩 규칙은 [CLAUDE.md](./CLAUDE.md)를 참조하세요.
 
 ## 🔐 권한 안내
 
@@ -164,31 +163,3 @@ Bible Easy는 다음 권한이 필요합니다:
 - **손쉬운 사용 (Accessibility)**: 키보드 입력 감지 및 텍스트 자동 치환을 위해 필요합니다.
 
 > 이 권한은 macOS 시스템 전역 키보드 이벤트를 감지하기 위해 반드시 필요하며, 수집된 데이터는 로컬에서만 처리되고 외부로 전송되지 않습니다.
-
-## 🤝 기여하기
-
-기여를 환영합니다! 다음 방법으로 참여할 수 있습니다:
-
-1. 이 저장소를 Fork 합니다
-2. 새로운 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`)
-3. 변경 사항을 커밋합니다 (`git commit -m 'feat: Add amazing feature'`)
-4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`)
-5. Pull Request를 생성합니다
-
-## 📝 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
-
-## 🙏 감사의 말
-
-- 성경 데이터: 대한성서공회 개역개정 성경
-- 아이콘: [icons8](https://icons8.com)
-
-## 📮 문의
-
-- 이슈: [GitHub Issues](https://github.com/seongjinYU/Bible_Easy/issues)
-- 이메일: [your-email@example.com](mailto:your-email@example.com)
-
----
-
-Made with ❤️ by [seongjinYU](https://github.com/seongjinYU)
