@@ -1,0 +1,194 @@
+# 📖 Bible Easy
+
+**어디서든 성경 구절을 빠르게 입력하는 macOS 유틸리티**
+
+Bible Easy는 macOS에서 실행되는 키보드 후킹 유틸리티로, 간단한 약어를 입력하면 자동으로 성경 구절로 변환해줍니다.
+
+## ✨ 주요 기능
+
+- **🎯 즉시 변환**: `#창 1:1` 입력 후 Enter → 창세기 1장 1절 본문으로 자동 치환
+- **🌍 어디서나 사용**: 모든 앱(메모, 메시지, 문서 등)에서 작동
+- **⚡ 빠른 입력**: 66권 성경 한글 약어 지원
+- **🔄 한영 자동 전환**: 한글/영문 입력 모두 인식 (예: `ckd` → `창`)
+- **📝 범위 조회 지원**: `#창 1:1-3` 형식으로 여러 절 한번에 입력
+
+## 🚀 사용 예시
+
+```
+입력: #창 1:1 [Enter]
+결과: 태초에 하나님이 천지를 창조하시니라
+
+입력: #요 3:16 [Enter]
+결과: 하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니...
+
+입력: #시 23:1 [Enter]
+결과: 여호와는 나의 목자시니 내게 부족함이 없으리로다
+```
+
+## 📦 설치 방법
+
+### 요구 사항
+
+- macOS 10.15 (Catalina) 이상
+- "손쉬운 사용" 권한 필요
+
+### 다운로드 및 설치
+
+1. [Releases](https://github.com/seongjinYU/Bible_Easy/releases) 페이지에서 최신 버전 다운로드
+2. `.dmg` 파일 실행 후 애플리케이션 폴더로 드래그
+3. 앱 실행 시 "손쉬운 사용" 권한 요청 승인
+   - 시스템 설정 > 개인정보 보호 > 손쉬운 사용 > Bible Easy 허용
+
+## 🎯 사용법
+
+### 기본 사용법
+
+1. Bible Easy 앱 실행
+2. 아무 앱에서나 `#` + 성경 약어 + 장:절 형식으로 입력
+3. `Enter` 키를 눌러 자동 치환
+
+### 입력 형식
+
+```
+기본: #[성경약어] [장]:[절]
+범위: #[성경약어] [장]:[시작절]-[끝절]
+```
+
+### 지원하는 성경 약어
+
+**구약 (39권)**
+```
+창, 출, 레, 민, 신, 수, 삿, 룻, 삼상, 삼하, 왕상, 왕하,
+대상, 대하, 스, 느, 에, 욥, 시, 잠, 전, 아, 사, 렘, 애,
+겔, 단, 호, 욜, 암, 옵, 욘, 미, 나, 합, 습, 학, 슥, 말
+```
+
+**신약 (27권)**
+```
+마, 막, 눅, 요, 행, 롬, 고전, 고후, 갈, 엡, 빌, 골,
+살전, 살후, 딤전, 딤후, 딛, 몬, 히, 약, 벧전, 벧후,
+요일, 요이, 요삼, 유, 계
+```
+
+### 입력 예시
+
+| 입력 | 결과 |
+|------|------|
+| `#창 1:1` | 창세기 1장 1절 |
+| `#요 3:16` | 요한복음 3장 16절 |
+| `#시 23:1-3` | 시편 23편 1-3절 |
+| `#롬 8:28` | 로마서 8장 28절 |
+| `#계 21:1` | 요한계시록 21장 1절 |
+
+## 🛠️ 개발 환경 설정
+
+### 요구 사항
+
+- Rust (최신 stable 버전)
+- Node.js & npm
+- Xcode Command Line Tools
+
+### 빌드 및 실행
+
+```bash
+# 저장소 클론
+git clone https://github.com/seongjinYU/Bible_Easy.git
+cd bible_easy
+
+# 의존성 설치
+npm install
+
+# 개발 모드 실행
+npm run dev
+
+# 프로덕션 빌드
+npm run build
+```
+
+### 테스트
+
+```bash
+# Rust 유닛 테스트
+cd src_tauri_be
+cargo test
+
+# 특정 모듈 테스트
+cargo test bible_abbr
+```
+
+## 🏗️ 프로젝트 구조
+
+```
+bible_easy/
+├── src_tauri_be/          # Rust 백엔드
+│   ├── src/
+│   │   ├── bible_abbr.rs  # 성경 약어 매핑
+│   │   ├── bible_verse.rs # 성경 구절 조회
+│   │   ├── hangul.rs      # 한글 조합 엔진
+│   │   ├── keyboard_listener.rs # 키보드 후킹
+│   │   └── main.rs        # 메인 엔트리
+│   └── Cargo.toml
+├── src_fe/                # 웹 프론트엔드
+│   ├── index.html
+│   ├── main.js
+│   └── styles.css
+├── bible.db               # SQLite 성경 데이터베이스
+└── package.json
+```
+
+## 💻 기술 스택
+
+- **프레임워크**: [Tauri](https://tauri.app/) - 경량 데스크톱 앱 프레임워크
+- **백엔드**: Rust
+  - `core-graphics` - macOS 키보드 이벤트 처리
+  - `rusqlite` - SQLite 데이터베이스 조회
+  - `serde` - JSON 직렬화/역직렬화
+  - `enigo` - 키보드 입력 시뮬레이션
+- **프론트엔드**: HTML/CSS/JavaScript (Vanilla)
+- **데이터베이스**: SQLite (개역개정 성경 전문)
+
+## 📋 개발 원칙
+
+이 프로젝트는 **TDD (테스트 주도 개발)** 방법론을 따릅니다.
+
+- 모든 핵심 로직은 유닛 테스트 필수
+- Red-Green-Refactor 사이클 준수
+- 코드 품질: `rustfmt`, `clippy` 사용
+
+자세한 코딩 규칙은 [CLAUDE.md](./CLAUDE.md)를 참조하세요.
+
+## 🔐 권한 안내
+
+Bible Easy는 다음 권한이 필요합니다:
+
+- **손쉬운 사용 (Accessibility)**: 키보드 입력 감지 및 텍스트 자동 치환을 위해 필요합니다.
+
+> 이 권한은 macOS 시스템 전역 키보드 이벤트를 감지하기 위해 반드시 필요하며, 수집된 데이터는 로컬에서만 처리되고 외부로 전송되지 않습니다.
+
+## 🤝 기여하기
+
+기여를 환영합니다! 다음 방법으로 참여할 수 있습니다:
+
+1. 이 저장소를 Fork 합니다
+2. 새로운 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`)
+3. 변경 사항을 커밋합니다 (`git commit -m 'feat: Add amazing feature'`)
+4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`)
+5. Pull Request를 생성합니다
+
+## 📝 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
+
+## 🙏 감사의 말
+
+- 성경 데이터: 대한성서공회 개역개정 성경
+- 아이콘: [icons8](https://icons8.com)
+
+## 📮 문의
+
+- 이슈: [GitHub Issues](https://github.com/seongjinYU/Bible_Easy/issues)
+- 이메일: [your-email@example.com](mailto:your-email@example.com)
+
+---
+
+Made with ❤️ by [seongjinYU](https://github.com/seongjinYU)
