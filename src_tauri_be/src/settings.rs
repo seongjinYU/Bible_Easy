@@ -24,6 +24,7 @@ impl Default for AppSettings {
 }
 
 /// 트리거 문자 (고정)
+#[allow(dead_code)]
 pub const TRIGGER_CHAR: &str = "#";
 
 /// 설정 파일 경로를 반환합니다.

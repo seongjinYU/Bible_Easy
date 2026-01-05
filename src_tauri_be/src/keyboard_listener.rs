@@ -7,7 +7,7 @@ use core_foundation::runloop::{kCFRunLoopCommonModes, CFRunLoop};
 #[cfg(target_os = "macos")]
 use core_graphics::event::{
     CGEventTap, CGEventTapLocation, CGEventTapOptions, CGEventTapPlacement,
-    CGEventType, EventField, CGEventFlags,
+    CGEventType, EventField,
 };
 use std::sync::{Arc, Mutex};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -42,12 +42,6 @@ impl BufferState {
         self.buffer.clear();
         self.buffer.push('#');
         self.hangul.clear();
-    }
-
-    fn push(&mut self, c: char) {
-        if self.active {
-            self.buffer.push(c);
-        }
     }
 
     fn pop(&mut self) {
@@ -297,7 +291,6 @@ fn handle_key_event(
     // macOS 키코드 매핑
     const KEY_BACKSPACE: i64 = 51;
     const KEY_ENTER: i64 = 36;
-    const KEY_SPACE: i64 = 49;
     const KEY_ESCAPE: i64 = 53;
 
     match keycode {

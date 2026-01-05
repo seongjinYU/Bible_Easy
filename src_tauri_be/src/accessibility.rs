@@ -1,3 +1,6 @@
+#![allow(deprecated)]
+#![allow(unexpected_cfgs)]
+
 /// macOS 접근성 권한 확인 모듈
 ///
 /// "손쉬운 사용" 권한이 있어야 키보드 이벤트를 감지할 수 있습니다.
