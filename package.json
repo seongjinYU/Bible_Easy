@@ -4,7 +4,7 @@
   "description": "성경 구절 자동완성 유틸리티",
   "scripts": {
     "tauri": "tauri",
-    "dev": "tauri dev",
+    "dev": "cd src_tauri_be && tauri dev",
     "build": "tauri build"
   },
   "keywords": [

@@ -77,6 +77,30 @@ pub fn cho_to_jong(cho_idx: usize) -> Option<usize> {
     }
 }
 
+/// 복합 모음 조합 (2벌식): 두 단모음을 합쳐 복합모음 인덱스 반환
+fn compose_vowel(base: usize, second: usize) -> Option<usize> {
+    match (base, second) {
+        (8, 0)   => Some(9),  // ㅗ + ㅏ = ㅘ
+        (8, 1)   => Some(10), // ㅗ + ㅐ = ㅙ
+        (8, 20)  => Some(11), // ㅗ + ㅣ = ㅚ
+        (13, 4)  => Some(14), // ㅜ + ㅓ = ㅝ
+        (13, 5)  => Some(15), // ㅜ + ㅔ = ㅞ
+        (13, 20) => Some(16), // ㅜ + ㅣ = ㅟ
+        (18, 20) => Some(19), // ㅡ + ㅣ = ㅢ
+        _ => None,
+    }
+}
+
+/// 복합 모음 분해 (backspace): 복합모음 → 기저 단모음 인덱스 반환
+fn decompose_vowel(jung: usize) -> Option<usize> {
+    match jung {
+        9 | 10 | 11 => Some(8),   // ㅘ/ㅙ/ㅚ → ㅗ
+        14 | 15 | 16 => Some(13), // ㅝ/ㅞ/ㅟ → ㅜ
+        19 => Some(18),            // ㅢ → ㅡ
+        _ => None,
+    }
+}
+
 /// 종성을 초성으로 변환 (받침 분리용)
 pub fn jong_to_cho(jong_idx: usize) -> Option<usize> {
     match jong_idx {
@@ -128,23 +152,24 @@ impl HangulComposer {
         self.jong = None;
     }
 
-    /// Backspace 처리: 한 단계씩 분해
+    /// Backspace 처리: 한 단계씩 분해 (복합 모음은 기저 모음으로 분해)
     /// Returns: true if something was removed, false if already empty
     pub fn backspace(&mut self) -> bool {
         if self.jong.is_some() {
-            // 종성 제거
             self.jong = None;
             true
-        } else if self.jung.is_some() {
-            // 중성 제거
-            self.jung = None;
+        } else if let Some(jung) = self.jung {
+            if let Some(base) = decompose_vowel(jung) {
+                // 복합 모음 → 기저 모음으로 분해 (ㅘ → ㅗ)
+                self.jung = Some(base);
+            } else {
+                self.jung = None;
+            }
             true
         } else if self.cho.is_some() {
-            // 초성 제거
             self.cho = None;
             true
         } else {
-            // 이미 비어있음
             false
         }
     }
@@ -204,6 +229,17 @@ impl HangulComposer {
                     // 중성 추가 (초성만 있는 상태)
                     self.jung = Some(jung_idx);
                     (None, self.to_char())
+                } else if self.cho.is_some() && self.jung.is_some() && self.jong.is_none() {
+                    // 중성이 이미 있는 상태 → 복합 모음 조합 시도 (ㅗ+ㅏ=ㅘ 등)
+                    if let Some(compound) = compose_vowel(self.jung.unwrap(), jung_idx) {
+                        self.jung = Some(compound);
+                        (None, self.to_char())
+                    } else {
+                        // 복합 불가 → 현재 글자 완성 후 새 모음 대기
+                        let completed = self.to_char();
+                        self.clear();
+                        (completed, None)
+                    }
                 } else if self.jong.is_some() {
                     // 종성이 있는 상태에서 중성 입력 → 종성을 빼서 새 글자 시작
                     let jong_idx = self.jong.unwrap();
@@ -282,5 +318,66 @@ mod tests {
         assert_eq!(composer.input('c'), (None, None));
         assert_eq!(composer.input('k'), (None, Some('차')));
         assert_eq!(composer.input('d'), (None, Some('창')));
+    }
+
+    #[test]
+    fn test_compound_vowel_wang() {
+        let mut composer = HangulComposer::new();
+
+        // "왕" = ㅇ(d) + ㅘ(h+k) + ㅇ(d)
+        assert_eq!(composer.input('d'), (None, None));          // ㅇ
+        assert_eq!(composer.input('h'), (None, Some('오')));    // ㅗ → 오
+        assert_eq!(composer.input('k'), (None, Some('와')));    // ㅗ+ㅏ=ㅘ → 와
+        assert_eq!(composer.input('d'), (None, Some('왕')));    // 종성 ㅇ → 왕
+    }
+
+    #[test]
+    fn test_compound_vowel_weo() {
+        let mut composer = HangulComposer::new();
+
+        // "원" = ㅇ(d) + ㅝ(n+j) + ㄴ(s)
+        assert_eq!(composer.input('d'), (None, None));
+        assert_eq!(composer.input('n'), (None, Some('우')));    // ㅜ → 우
+        assert_eq!(composer.input('j'), (None, Some('워')));    // ㅜ+ㅓ=ㅝ → 워
+        assert_eq!(composer.input('s'), (None, Some('원')));    // 종성 ㄴ → 원
+    }
+
+    #[test]
+    fn test_compound_vowel_backspace() {
+        let mut composer = HangulComposer::new();
+
+        // "와" 입력 후 backspace → "오" 로 돌아가야 함
+        composer.input('d'); // ㅇ
+        composer.input('h'); // ㅗ
+        composer.input('k'); // ㅘ (복합)
+        assert_eq!(composer.to_char(), Some('와'));
+
+        composer.backspace(); // ㅘ → ㅗ 분해
+        assert_eq!(composer.to_char(), Some('오'));
+
+        composer.backspace(); // ㅗ 제거
+        assert_eq!(composer.to_char(), None);
+    }
+
+    #[test]
+    fn test_wang_sang_pattern() {
+        // "왕상" 전체 조합 테스트 (열왕기상 약어)
+        let mut composer = HangulComposer::new();
+        let mut result = String::new();
+
+        // 왕: d h k d
+        for ch in "dhkd".chars() {
+            let (completed, _) = composer.input(ch);
+            if let Some(c) = completed { result.push(c); }
+        }
+        // 상: t k d (ㅅ+ㅏ+ㅇ)
+        for ch in "tkd".chars() {
+            let (completed, _) = composer.input(ch);
+            if let Some(c) = completed { result.push(c); }
+        }
+        // 마지막 조합 중인 글자 flush
+        if let Some(c) = composer.to_char() { result.push(c); }
+
+        assert_eq!(result, "왕상");
     }
 }
